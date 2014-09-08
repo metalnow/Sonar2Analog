@@ -1,4 +1,4 @@
-Sonar2Anolog
+Sonar2Analog
 ============
 
 The code original from http://www.rcgroups.com/forums/showthread.php?t=2209667
