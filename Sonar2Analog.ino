@@ -81,6 +81,7 @@ NewPing sonar(TRIGGER_PIN, ECHO_PIN, MAX_DISTANCE); // NewPing setup of pins and
 #define INTERNAL2V56NC (6)
 
 const int pwm_out = 0;
+const int led = 1;
 
 int pwm_table[PWM_TABLE_ITEMS];
 int pwm_table_counter = 0;
@@ -94,20 +95,32 @@ void setup()  {
   pinMode(pwm_out, OUTPUT);
   analogReference(INTERNAL2V56NC);
   delay(100);
-  
+  pinMode(led, OUTPUT); //LED on Model A
+  for (int i = 0; i < 6; ++i )
+  {
+    digitalWrite(led, HIGH);
+    delay(300);               // wait for a second
+    digitalWrite(led, LOW); 
+    delay(300);               // wait for a second    
+  }
 } 
 
 void loop()  { 
   
   int pwm_sum = 0, pwm_value = 0;
-  pwm_table[pwm_table_counter] = (int)(sonar.ping() / PWM_CORR_FACTOR);
+  int echo = sonar.ping();
+  pwm_table[pwm_table_counter] = (int)(echo / PWM_CORR_FACTOR);
   for (int i =0; i<PWM_TABLE_ITEMS; i++) pwm_sum += pwm_table[i];
   pwm_value = pwm_sum / PWM_TABLE_ITEMS;
   pwm_table_counter++;
   if (pwm_table_counter > (PWM_TABLE_ITEMS - 1))    pwm_table_counter = 0;
     
   analogWrite(pwm_out, pwm_value);
+  if ( echo != NO_ECHO )
+    digitalWrite(led, HIGH);
+  
   _delay_ms(45);  // make max 20 samples per second
+  digitalWrite(led, LOW); 
 
 }
 
